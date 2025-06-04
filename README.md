@@ -348,5 +348,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - OpenCV for providing the computer vision algorithms
 - The creators of the various datasets used for testing
-#   l a n d m a r k _ a n a l y s i s _ a p p  
- 
