@@ -93,7 +93,7 @@ class LandmarkAnalysisApp:
         
         # Landmark recognition database
         landmark_db_path = os.path.join(self.models_dir, 'landmark_database')
-        if os.path.exists(landmark_db_path):
+        if os.path.exists(landmark_db_path):    
             try:
                 self.landmark_recognizer.load_database(landmark_db_path)
                 print(f"Loaded landmark database from {landmark_db_path}")

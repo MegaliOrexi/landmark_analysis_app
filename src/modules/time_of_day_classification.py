@@ -326,7 +326,7 @@ class TimeOfDayClassifier:
             output_path: Path to save the visualization (optional)
             
         Returns:
-            Visualization image
+            Visualization image (or original image if conversion fails)
         """
         # Get classification results from all methods
         classification, confidence, metrics = self.classify(image)
@@ -363,7 +363,7 @@ class TimeOfDayClassifier:
         # Display bright pixel ratio
         bright_result = metrics['method_results']['bright_pixel_ratio']
         axs[1, 1].bar(['Bright', 'Not Bright'], 
-                     [bright_result[2]['bright_ratio'], 1 - bright_result[2]['bright_ratio']])
+                    [bright_result[2]['bright_ratio'], 1 - bright_result[2]['bright_ratio']])
         axs[1, 1].axhline(y=self.thresholds['bright_pixel_ratio'], color='r', linestyle='--')
         axs[1, 1].set_title(f"Bright Pixel Ratio: {bright_result[2]['bright_ratio']:.2f}")
         axs[1, 1].set_ylim([0, 1])
@@ -371,7 +371,7 @@ class TimeOfDayClassifier:
         # Display dark pixel ratio
         dark_result = metrics['method_results']['dark_pixel_ratio']
         axs[1, 2].bar(['Dark', 'Not Dark'], 
-                     [dark_result[2]['dark_ratio'], 1 - dark_result[2]['dark_ratio']])
+                    [dark_result[2]['dark_ratio'], 1 - dark_result[2]['dark_ratio']])
         axs[1, 2].axhline(y=self.thresholds['dark_pixel_ratio'], color='r', linestyle='--')
         axs[1, 2].set_title(f"Dark Pixel Ratio: {dark_result[2]['dark_ratio']:.2f}")
         axs[1, 2].set_ylim([0, 1])
@@ -383,10 +383,16 @@ class TimeOfDayClassifier:
         if output_path is not None:
             plt.savefig(output_path)
         
-        # Convert figure to image
-        fig.canvas.draw()
-        vis_image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        # Convert figure to image with error handling
+        try:
+            fig.canvas.draw()
+            vis_image = np.frombuffer(fig.canvas.tostring_argb(), dtype=np.uint8)
+            vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (4,))  # ARGB has 4 channels
+            # Convert ARGB to RGB
+            vis_image = vis_image[:, :, 1:]  # Remove alpha channel
+        except (ValueError, AttributeError) as e:
+            # If conversion fails, return the original image
+            print(f"Warning: Could not convert visualization to array: {e}")
         
         # Close figure to free memory
         plt.close(fig)
