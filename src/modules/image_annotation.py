@@ -6,6 +6,8 @@ from typing import List, Tuple, Dict, Optional, Any
 from enum import Enum
 import uuid
 from datetime import datetime
+import tkinter as tk
+from tkinter import simpledialog
 
 
 class AnnotationType(Enum):
@@ -153,9 +155,20 @@ class Annotation:
         elif self.type == AnnotationType.TEXT:
             # Check if we have at least 1 point and a label
             if len(self.points) >= 1 and self.label is not None:
-                # Draw text
-                cv2.putText(img_copy, self.label, self.points[0], cv2.FONT_HERSHEY_SIMPLEX, 
-                          self.font_scale, self.color, self.thickness)
+                # Handle multi-line text
+                lines = self.label.split('\n')
+                y_offset = 0
+                
+                for line in lines:
+                    if line.strip():  # Skip empty lines
+                        text_pos = (self.points[0][0], self.points[0][1] + y_offset)
+                        cv2.putText(img_copy, line, text_pos, cv2.FONT_HERSHEY_SIMPLEX, 
+                                  self.font_scale, self.color, self.thickness)
+                        
+                        # Calculate line height for next line
+                        text_size = cv2.getTextSize(line, cv2.FONT_HERSHEY_SIMPLEX, 
+                                                  self.font_scale, self.thickness)[0]
+                        y_offset += int(text_size[1] * 1.5)  # Add some spacing between lines
         
         elif self.type == AnnotationType.POLYGON:
             # Check if we have at least 3 points
@@ -194,6 +207,44 @@ class Annotation:
         return img_copy
 
 
+class TextInputDialog:
+    """
+    Simple text input dialog using tkinter.
+    """
+    
+    def __init__(self):
+        self.root = None
+    
+    def get_text(self, title="Enter Text", prompt="Enter text:"):
+        """
+        Get text input from user.
+        
+        Args:
+            title: Dialog title
+            prompt: Prompt message
+            
+        Returns:
+            Text entered by user or None if cancelled
+        """
+        # Create a temporary root window if it doesn't exist
+        if self.root is None:
+            self.root = tk.Tk()
+            self.root.withdraw()  # Hide the root window
+        
+        # Get text input
+        text = simpledialog.askstring(title, prompt)
+        
+        return text
+    
+    def cleanup(self):
+        """
+        Clean up the tkinter root window.
+        """
+        if self.root is not None:
+            self.root.destroy()
+            self.root = None
+
+
 class ImageAnnotator:
     """
     Class for annotating images.
@@ -230,6 +281,9 @@ class ImageAnnotator:
         # Image being annotated
         self.image = None
         self.display_image = None
+        
+        # Text input dialog
+        self.text_dialog = TextInputDialog()
     
     def set_annotation_type(self, annotation_type: AnnotationType) -> None:
         """
@@ -284,6 +338,18 @@ class ImageAnnotator:
             label: Label for annotations
         """
         self.current_label = label
+    
+    def get_text_input(self, prompt="Enter text:") -> Optional[str]:
+        """
+        Get text input from user.
+        
+        Args:
+            prompt: Prompt message
+            
+        Returns:
+            Text entered by user or None if cancelled
+        """
+        return self.text_dialog.get_text(prompt=prompt)
     
     def _mouse_callback(self, event: int, x: int, y: int, flags: int, param: Any) -> None:
         """
@@ -473,16 +539,19 @@ class ImageAnnotator:
             flags: Event flags
         """
         if event == cv2.EVENT_LBUTTONDOWN:
-            # Check if we have a label
-            if self.current_label is None or self.current_label == "":
-                print("Please set a label for text annotation")
+            # Get text input from user
+            text = self.get_text_input("Enter text for annotation:")
+            
+            # Check if user entered text
+            if text is None or text.strip() == "":
+                print("No text entered or cancelled")
                 return
             
             # Create new annotation
             annotation = Annotation(
                 annotation_type=AnnotationType.TEXT,
                 points=[(x, y)],
-                label=self.current_label,
+                label=text,
                 color=self.current_color,
                 thickness=self.current_thickness,
                 font_scale=self.current_font_scale
@@ -490,6 +559,7 @@ class ImageAnnotator:
             
             # Add annotation to list
             self.annotations.append(annotation)
+            print(f"Added text annotation: '{text}' at position ({x}, {y})")
             
             # Update display
             self.display_image = self.draw_annotations()
@@ -647,14 +717,16 @@ class ImageAnnotator:
         print("  - c: Set annotation type to Circle")
         print("  - l: Set annotation type to Line")
         print("  - a: Set annotation type to Arrow")
-        print("  - t: Set annotation type to Text")
+        print("  - t: Set annotation type to Text (click to add text)")
         print("  - p: Set annotation type to Polygon (right-click to finish)")
         print("  - f: Set annotation type to Freehand")
         print("  - 1-9: Set label to corresponding number")
         print("  - 0: Clear label")
         print("  - +/-: Increase/decrease thickness")
+        print("  - [/]: Increase/decrease font scale")
         print("  - SPACE: Toggle filled/outline")
         print("  - DELETE: Remove last annotation")
+        print("  - ENTER: Prompt for custom label text")
         
         # Main loop
         while True:
@@ -687,7 +759,7 @@ class ImageAnnotator:
             
             elif key == ord('t'):
                 self.set_annotation_type(AnnotationType.TEXT)
-                print("Annotation type set to Text")
+                print("Annotation type set to Text (click to add text)")
             
             elif key == ord('p'):
                 self.set_annotation_type(AnnotationType.POLYGON)
@@ -707,6 +779,15 @@ class ImageAnnotator:
                 self.set_label(None)
                 print("Label cleared")
             
+            elif key == 13:  # ENTER
+                # Get custom label text
+                label_text = self.get_text_input("Enter label text:")
+                if label_text is not None and label_text.strip() != "":
+                    self.set_label(label_text)
+                    print(f"Label set to '{label_text}'")
+                else:
+                    print("No label entered or cancelled")
+            
             # Check for thickness change
             elif key == ord('+') or key == ord('='):
                 self.set_thickness(min(10, self.current_thickness + 1))
@@ -716,6 +797,15 @@ class ImageAnnotator:
                 self.set_thickness(max(1, self.current_thickness - 1))
                 print(f"Thickness set to {self.current_thickness}")
             
+            # Check for font scale change
+            elif key == ord(']'):
+                self.set_font_scale(min(5.0, self.current_font_scale + 0.1))
+                print(f"Font scale set to {self.current_font_scale:.1f}")
+            
+            elif key == ord('['):
+                self.set_font_scale(max(0.1, self.current_font_scale - 0.1))
+                print(f"Font scale set to {self.current_font_scale:.1f}")
+            
             # Check for filled toggle
             elif key == ord(' '):
                 self.set_filled(not self.current_filled)
@@ -724,12 +814,13 @@ class ImageAnnotator:
             # Check for delete last annotation
             elif key == 8 or key == 127:  # BACKSPACE or DELETE
                 if self.annotations:
-                    self.annotations.pop()
+                    removed = self.annotations.pop()
                     self.display_image = self.draw_annotations()
-                    print("Removed last annotation")
+                    print(f"Removed last annotation: {removed.type.value}")
         
         # Clean up
         cv2.destroyWindow('Annotation')
+        self.text_dialog.cleanup()
         
         # Return the annotations
         return self.annotations
@@ -801,40 +892,3 @@ class ImageAnnotator:
 if __name__ == "__main__":
     # Initialize annotator
     annotator = ImageAnnotator()
-    
-    # Test on a sample image
-    sample_image_path = "../data/images/test.jpg"  # Update with your image path
-    if os.path.exists(sample_image_path):
-        # Load image
-        image = cv2.imread(sample_image_path)
-        
-        if image is not None:
-            # Start annotation
-            annotations = annotator.annotate_image(image)
-            
-            # Print annotations
-            print(f"Created {len(annotations)} annotations:")
-            for i, annotation in enumerate(annotations):
-                print(f"  {i+1}. Type: {annotation.type.value}, Points: {annotation.points}, Label: {annotation.label}")
-            
-            # Save annotations
-            if annotations:
-                # Save to file
-                annotations_path = "../data/annotations/test_annotations.json"
-                annotator.save_annotations(annotations, annotations_path)
-                print(f"Saved annotations to {annotations_path}")
-                
-                # Save annotated image
-                output_path = "../data/annotations/test_annotated.jpg"
-                annotator.save_annotated_image(image, annotations, output_path)
-                print(f"Saved annotated image to {output_path}")
-                
-                # Display the annotated image
-                annotated_image = cv2.imread(output_path)
-                cv2.imshow("Annotated Image", annotated_image)
-                cv2.waitKey(0)
-                cv2.destroyAllWindows()
-        else:
-            print(f"Could not load image: {sample_image_path}")
-    else:
-        print(f"Sample image not found: {sample_image_path}")
