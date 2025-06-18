@@ -1,0 +1,76 @@
+{
+  "245a85d0-9fdd-4c11-8a60-f14b71d3bf23": {
+    "id": "245a85d0-9fdd-4c11-8a60-f14b71d3bf23",
+    "name": "Dubai Landmarks",
+    "type": "landmarks",
+    "description": "Dataset of landmarks in Dubai",
+    "created_at": "2025-06-18T14:13:37.173394",
+    "updated_at": "2025-06-18T14:13:57.547589",
+    "image_count": 12,
+    "tags": {
+      "88495bcd-51c2-48cc-9fa6-44a540fdc4be": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.516756",
+        "class": "landmarks"
+      },
+      "00a6cef7-2573-4edd-b33f-8550ef9504c1": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.518657",
+        "class": "landmarks"
+      },
+      "8a54d5b5-3d5c-42c7-ac50-f2221631d742": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.523025",
+        "class": "landmarks"
+      },
+      "3f25f306-7ef7-496f-9129-cade5980bd33": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.525744",
+        "class": "landmarks"
+      },
+      "9fa31ddc-b8d1-406d-b24b-176b7388418e": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.527743",
+        "class": "landmarks"
+      },
+      "f799490f-d3b2-447a-b78f-fe7b91c5f564": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.529439",
+        "class": "landmarks"
+      },
+      "35ae2e20-c9c1-498f-ab4e-c7b89633e039": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.531347",
+        "class": "landmarks"
+      },
+      "77bc88fd-abb4-4717-82c3-3b9e893884b1": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.535058",
+        "class": "landmarks"
+      },
+      "22713f73-2b35-4683-a2aa-57520248da21": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.537059",
+        "class": "landmarks"
+      },
+      "1c09477d-0db4-4d2f-9bb6-f0cac8331938": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.543543",
+        "class": "landmarks"
+      },
+      "1c3f4efc-0b80-4458-8757-1f53f9c67e5e": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.545578",
+        "class": "landmarks"
+      },
+      "8febb5e1-cbf5-420c-a303-1d7fbd84ac09": {
+        "batch_added_at": "2025-06-18T14:13:57.513042",
+        "added_at": "2025-06-18T14:13:57.547589",
+        "class": "landmarks"
+      }
+    },
+    "classes": [
+      "landmarks"
+    ]
+  }
+}

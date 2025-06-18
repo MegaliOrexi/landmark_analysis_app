@@ -1,6 +1,7 @@
 import cv2
 import os
 import numpy as np
+import pickle
 from typing import List, Tuple, Dict, Optional, Any
 
 
@@ -9,18 +10,27 @@ class LandmarkRecognizer:
     Class for recognizing landmarks in images using ORB features and feature matching.
     """
     
-    def __init__(self, max_features: int = 1000):
+    def __init__(self, max_features: int = 1000, orb_distance_thresh: int = 65, 
+                 min_matches: int = 8, ransac_thresh: float = 6.4):
         """
         Initialize the landmark recognizer.
         
         Args:
             max_features: Maximum number of features to detect
+            orb_distance_thresh: Distance threshold for ORB matching
+            min_matches: Minimum number of matches required for recognition
+            ransac_thresh: RANSAC threshold for homography filtering
         """
-        # Initialize ORB detector
+        # Initialize ORB detector with enhanced parameters
         self.orb = cv2.ORB_create(nfeatures=max_features)
         
         # Initialize BFMatcher with Hamming distance (appropriate for ORB binary descriptors)
         self.matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+        
+        # Enhanced parameters from the second script
+        self.orb_distance_thresh = orb_distance_thresh
+        self.min_matches = min_matches
+        self.ransac_thresh = ransac_thresh
         
         # Database of landmarks
         self.landmark_db = {}  # Maps landmark names to (keypoints, descriptors) tuples
@@ -50,15 +60,61 @@ class LandmarkRecognizer:
         else:
             print(f"Warning: No features detected for landmark '{name}'")
     
-    def recognize_landmark(self, image: np.ndarray, min_matches: int = 10, 
-                          ratio_threshold: float = 0.75) -> Tuple[Optional[str], int, Optional[np.ndarray]]:
+    def match_orb_features(self, desc1: np.ndarray, desc2: np.ndarray) -> List:
         """
-        Recognize a landmark in the input image.
+        Match ORB features using the enhanced method from the second script.
+        
+        Args:
+            desc1: Query descriptors
+            desc2: Database descriptors
+            
+        Returns:
+            List of good matches
+        """
+        if desc1 is None or desc2 is None:
+            return []
+
+        matches = self.matcher.match(desc1, desc2)
+        matches = sorted(matches, key=lambda x: x.distance)
+        good_matches = [m for m in matches if m.distance < self.orb_distance_thresh]
+        return good_matches
+    
+    def filter_matches_ransac(self, kp1: List, kp2: List, matches: List) -> List:
+        """
+        Filter matches using RANSAC homography estimation.
+        
+        Args:
+            kp1: Query keypoints
+            kp2: Database keypoints
+            matches: Raw matches
+            
+        Returns:
+            Filtered inlier matches
+        """
+        if len(matches) < 4:
+            return []
+
+        src_pts = np.float32([kp1[m.queryIdx].pt for m in matches]).reshape(-1, 1, 2)
+        dst_pts = np.float32([kp2[m.trainIdx].pt for m in matches]).reshape(-1, 1, 2)
+        
+        try:
+            H, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, self.ransac_thresh)
+            
+            if mask is not None:
+                inlier_matches = [m for i, m in enumerate(matches) if mask[i]]
+                return inlier_matches
+        except:
+            pass
+        
+        return []
+    
+    def recognize_landmark(self, image: np.ndarray, use_ransac: bool = True) -> Tuple[Optional[str], int, Optional[np.ndarray]]:
+        """
+        Recognize a landmark in the input image using enhanced ORB matching.
         
         Args:
             image: Input image
-            min_matches: Minimum number of matches required for recognition
-            ratio_threshold: Ratio threshold for good matches
+            use_ransac: Whether to use RANSAC filtering for matches
             
         Returns:
             Tuple of (landmark_name, match_count, result_image) where:
@@ -89,14 +145,14 @@ class LandmarkRecognizer:
         best_landmark_name = None
         
         for name, (landmark_keypoints, landmark_descriptors) in self.landmark_db.items():
-            # Match descriptors
-            matches = self.matcher.match(query_descriptors, landmark_descriptors)
+            # Match descriptors using enhanced method
+            raw_matches = self.match_orb_features(query_descriptors, landmark_descriptors)
             
-            # Sort matches by distance (lower is better)
-            matches = sorted(matches, key=lambda x: x.distance)
-            
-            # Count good matches (below a distance threshold)
-            good_matches = [m for m in matches if m.distance < ratio_threshold * max(1, min(matches, key=lambda x: x.distance).distance)]
+            # Apply RANSAC filtering if requested
+            if use_ransac:
+                good_matches = self.filter_matches_ransac(query_keypoints, landmark_keypoints, raw_matches)
+            else:
+                good_matches = raw_matches
             
             # Update best match if this is better
             if len(good_matches) > best_match_count:
@@ -106,15 +162,52 @@ class LandmarkRecognizer:
                 best_landmark_name = name
         
         # Check if the best match has enough matches
-        if best_match_count >= min_matches:
+        if best_match_count >= self.min_matches:
             # Draw matches for visualization
             landmark_image = self.landmark_images[best_landmark_name]
             result_image = cv2.drawMatches(image, query_keypoints, landmark_image, best_landmark_keypoints, 
-                                         best_matches[:min(20, len(best_matches))], None, 
+                                         best_matches[:min(50, len(best_matches))], None, 
                                          flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
             return best_landmark_name, best_match_count, result_image
         else:
             return None, 0, None
+    
+    def get_match_confidence(self, image: np.ndarray, landmark_name: str) -> float:
+        """
+        Calculate matching confidence for a specific landmark.
+        
+        Args:
+            image: Input image
+            landmark_name: Name of the landmark to match against
+            
+        Returns:
+            Confidence score (ratio of matches to query keypoints)
+        """
+        if landmark_name not in self.landmark_db:
+            return 0.0
+        
+        # Convert to grayscale if needed
+        if len(image.shape) == 3:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = image
+        
+        # Detect keypoints and compute descriptors for the query image
+        query_keypoints, query_descriptors = self.orb.detectAndCompute(gray, None)
+        
+        if query_descriptors is None or len(query_keypoints) == 0:
+            return 0.0
+        
+        # Get landmark data
+        landmark_keypoints, landmark_descriptors = self.landmark_db[landmark_name]
+        
+        # Match and filter
+        raw_matches = self.match_orb_features(query_descriptors, landmark_descriptors)
+        good_matches = self.filter_matches_ransac(query_keypoints, landmark_keypoints, raw_matches)
+        
+        # Calculate confidence
+        confidence = len(good_matches) / len(query_keypoints) if query_keypoints else 0.0
+        return confidence
     
     def save_database(self, db_dir: str) -> None:
         """
@@ -131,7 +224,7 @@ class LandmarkRecognizer:
             # Create a safe filename
             safe_name = ''.join(c if c.isalnum() else '_' for c in name)
             
-            # Save the descriptors
+            # Save descriptors
             desc_path = os.path.join(db_dir, f"{safe_name}_descriptors.npy")
             np.save(desc_path, descriptors)
             
@@ -139,11 +232,12 @@ class LandmarkRecognizer:
             img_path = os.path.join(db_dir, f"{safe_name}_image.jpg")
             cv2.imwrite(img_path, self.landmark_images[name])
             
-            # Save keypoint information (convert to serializable format)
+            # Save keypoint information using pickle (convert to serializable format)
             keypoints_data = [(kp.pt, kp.size, kp.angle, kp.response, kp.octave, kp.class_id) 
                              for kp in keypoints]
-            kp_path = os.path.join(db_dir, f"{safe_name}_keypoints.npy")
-            np.save(kp_path, keypoints_data)
+            kp_path = os.path.join(db_dir, f"{safe_name}_keypoints.pkl")
+            with open(kp_path, 'wb') as f:
+                pickle.dump(keypoints_data, f)
         
         # Save the landmark names
         names_path = os.path.join(db_dir, "landmark_names.txt")
@@ -196,15 +290,18 @@ class LandmarkRecognizer:
                         continue
                     
                     # Load keypoints
-                    kp_path = os.path.join(db_dir, f"{safe_name}_keypoints.npy")
+                    kp_path = os.path.join(db_dir, f"{safe_name}_keypoints.pkl")
                     if os.path.exists(kp_path):
-                        keypoints_data = np.load(kp_path, allow_pickle=True)
-                        keypoints = [cv2.KeyPoint(x=pt[0][0], y=pt[0][1], size=pt[1], 
-                                                angle=pt[2], response=pt[3], octave=pt[4], 
-                                                class_id=pt[5]) for pt in keypoints_data]
+                        with open(kp_path, 'rb') as f:
+                            keypoints_data = pickle.load(f)
                     else:
                         print(f"Warning: Keypoints not found for landmark '{name}'")
                         continue
+                    
+                    # Convert keypoints back to OpenCV KeyPoint objects
+                    keypoints = [cv2.KeyPoint(x=pt[0][0], y=pt[0][1], size=pt[1], 
+                                            angle=pt[2], response=pt[3], octave=pt[4], 
+                                            class_id=pt[5]) for pt in keypoints_data]
                     
                     # Add to database
                     self.landmark_db[name] = (keypoints, descriptors)
@@ -292,8 +389,13 @@ def load_landmark_dataset(dataset_dir: str) -> Dict[str, List[str]]:
 
 # Example usage:
 if __name__ == "__main__":
-    # Initialize landmark recognizer
-    recognizer = LandmarkRecognizer()
+    # Initialize landmark recognizer with enhanced ORB parameters
+    recognizer = LandmarkRecognizer(
+        max_features=1000,
+        orb_distance_thresh=65,
+        min_matches=8,
+        ransac_thresh=6.4
+    )
     
     # Test on sample images
     sample_dir = "../data/images/landmarks"  # Update with your landmark image directory
@@ -326,6 +428,10 @@ if __name__ == "__main__":
             
             if landmark_name is not None:
                 print(f"Recognized landmark: {landmark_name} with {match_count} matches")
+                
+                # Get confidence score
+                confidence = recognizer.get_match_confidence(test_image, landmark_name)
+                print(f"Confidence score: {confidence:.3f}")
                 
                 # Display result
                 cv2.imshow("Landmark Recognition", result_image)

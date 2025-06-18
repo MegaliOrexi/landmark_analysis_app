@@ -4,99 +4,98 @@ import numpy as np
 from typing import List, Tuple, Dict, Optional, Any
 
 
+import cv2
+import os
+import numpy as np
+from typing import List, Tuple, Dict, Optional, Any
+
+
 class FaceDetector:
     """
-    Class for detecting faces in images using OpenCV's Haar Cascade classifier.
+    Class for detecting faces in images using OpenCV's DNN-based SSD face detector.
     """
-    
-    def __init__(self, cascade_path: Optional[str] = None):
+
+    def __init__(self, confidence_threshold: float = 0.5):
         """
-        Initialize the face detector with a Haar cascade classifier.
-        
-        Args:
-            cascade_path: Path to the Haar cascade XML file. If None, uses the default frontal face cascade.
+        Initialize the DNN face detector using paths relative to this file.
         """
-        if cascade_path is None:
-            # Use the default OpenCV frontal face cascade
-            self.cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
-        else:
-            self.cascade_path = cascade_path
-            
-        # Load the face cascade
-        self.face_cascade = cv2.CascadeClassifier(self.cascade_path)
-        
-        # Check if the cascade loaded successfully
-        if self.face_cascade.empty():
-            raise ValueError(f"Error: Could not load face cascade from {self.cascade_path}")
-    
-    def detect_faces(self, image: np.ndarray, scale_factor: float = 1.1, 
-                    min_neighbors: int = 5, min_size: Tuple[int, int] = (30, 30)) -> List[Tuple[int, int, int, int]]:
+        base_path = os.path.join(os.path.dirname(__file__), '..', 'utils')
+        prototxt_path = os.path.join(base_path, 'deploy.prototxt')
+        model_path = os.path.join(base_path, 'res10_300x300_ssd_iter_140000.caffemodel')
+
+        self.net = cv2.dnn.readNetFromCaffe(prototxt_path, model_path)
+        self.confidence_threshold = confidence_threshold
+
+
+    def detect_faces(self, image: np.ndarray) -> List[Tuple[int, int, int, int]]:
         """
-        Detect faces in the input image.
-        
+        Detect faces in the input image using a DNN model.
+
         Args:
             image: Input image (BGR format)
-            scale_factor: Parameter specifying how much the image size is reduced at each image scale
-            min_neighbors: Parameter specifying how many neighbors each candidate rectangle should have
-            min_size: Minimum possible object size. Objects smaller than this are ignored.
-            
+
         Returns:
             List of face bounding boxes in format (x, y, width, height)
         """
-        # Convert to grayscale for face detection
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        
-        # Detect faces
-        faces = self.face_cascade.detectMultiScale(
-            gray,
-            scaleFactor=scale_factor,
-            minNeighbors=min_neighbors,
-            minSize=min_size
-        )
-        
+        h, w = image.shape[:2]
+        blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0,
+                                     (300, 300), (104.0, 177.0, 123.0))
+        self.net.setInput(blob)
+        detections = self.net.forward()
+
+        faces = []
+        for i in range(detections.shape[2]):
+            confidence = detections[0, 0, i, 2]
+            if confidence > self.confidence_threshold:
+                box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+                (x1, y1, x2, y2) = box.astype("int")
+                x1, y1 = max(0, x1), max(0, y1)
+                x2, y2 = min(w - 1, x2), min(h - 1, y2)
+                faces.append((x1, y1, x2 - x1, y2 - y1))
         return faces
-    
-    def draw_faces(self, image: np.ndarray, faces: List[Tuple[int, int, int, int]], 
-                  color: Tuple[int, int, int] = (0, 255, 0), thickness: int = 2) -> np.ndarray:
+
+    def draw_faces(self, image: np.ndarray, faces: List[Tuple[int, int, int, int]],
+                   color: Tuple[int, int, int] = (0, 255, 0), thickness: int = 2) -> np.ndarray:
         """
         Draw bounding boxes around detected faces.
-        
+
         Args:
             image: Input image
             faces: List of face bounding boxes in format (x, y, width, height)
             color: Color of the bounding box (BGR format)
             thickness: Thickness of the bounding box lines
-            
+
         Returns:
             Image with face bounding boxes drawn
         """
         img_copy = image.copy()
         for (x, y, w, h) in faces:
-            cv2.rectangle(img_copy, (x, y), (x+w, y+h), color, thickness)
+            cv2.rectangle(img_copy, (x, y), (x + w, y + h), color, thickness)
         return img_copy
-    
-    def extract_face_regions(self, image: np.ndarray, faces: List[Tuple[int, int, int, int]], 
-                            target_size: Optional[Tuple[int, int]] = None) -> List[np.ndarray]:
+
+    def extract_face_regions(self, image: np.ndarray, faces: List[Tuple[int, int, int, int]],
+                             target_size: Optional[Tuple[int, int]] = None) -> List[np.ndarray]:
         """
         Extract face regions from the image.
-        
+
         Args:
             image: Input image
             faces: List of face bounding boxes in format (x, y, width, height)
             target_size: Size to resize extracted faces to (optional)
-            
+
         Returns:
             List of extracted face images
         """
         face_regions = []
         for (x, y, w, h) in faces:
-            face = image[y:y+h, x:x+w]
+            face = image[y:y + h, x:x + w]
             if target_size is not None:
                 face = cv2.resize(face, target_size)
             face_regions.append(face)
         return face_regions
 
-
+    
+    
 class FaceRecognizer:
     """
     Class for recognizing faces using OpenCV's LBPH Face Recognizer.
@@ -317,26 +316,19 @@ def load_face_dataset(dataset_dir: str) -> Tuple[List[np.ndarray], List[int], Di
 
 # Example usage:
 if __name__ == "__main__":
-    # Initialize face detector
     detector = FaceDetector()
-    
-    # Test on a sample image
-    sample_image_path = "../data/images/sample.jpg"  # Update with your image path
-    if os.path.exists(sample_image_path):
-        # Load image
-        image = cv2.imread(sample_image_path)
-        
-        # Detect faces
+    image_path = "../data/images/sample.jpg"
+
+    if os.path.exists(image_path):
+        image = cv2.imread(image_path)
         faces = detector.detect_faces(image)
-        
-        # Draw faces on the image
         result = detector.draw_faces(image, faces)
-        
-        # Display result
-        cv2.imshow("Detected Faces", result)
+
+        cv2.imshow("Frontal + Profile Face Detection", result)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        
-        print(f"Detected {len(faces)} faces in the image")
+
+        print(f"Detected {len(faces)} faces (frontal and profile combined)")
     else:
-        print(f"Sample image not found: {sample_image_path}")
+        print(f"Image not found: {image_path}")
+

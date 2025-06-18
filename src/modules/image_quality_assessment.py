@@ -333,6 +333,10 @@ class ImageQualityAssessor:
         # Make a copy of the image
         highlighted = image.copy()
         
+        # Ensure we're working with a color image
+        if len(highlighted.shape) == 2:
+            highlighted = cv2.cvtColor(highlighted, cv2.COLOR_GRAY2BGR)
+        
         # Create an overlay for highlighting issues
         overlay = np.zeros_like(highlighted)
         
@@ -380,8 +384,16 @@ class ImageQualityAssessor:
         
         # Highlight saturation issues
         if 'saturation' in assessment['quality_issues']:
-            # Use saturation mask from assessment
-            saturation_mask = assessment['visualizations']['saturation_mask'] > 0
+            # Get saturation visualization from assessment
+            saturation_vis = assessment['visualizations']['saturation_mask']
+            
+            # Create proper mask - check if saturation_vis is grayscale or color
+            if len(saturation_vis.shape) == 3:
+                # If color, convert to grayscale to create mask
+                saturation_mask = cv2.cvtColor(saturation_vis, cv2.COLOR_BGR2GRAY) > 0
+            else:
+                # If grayscale, use directly
+                saturation_mask = saturation_vis > 0
             
             # Apply red highlight for saturated pixels
             overlay[saturation_mask] = [0, 0, 255]  # Red
@@ -461,10 +473,16 @@ class ImageQualityAssessor:
         if output_path is not None:
             plt.savefig(output_path)
         
-        # Convert figure to image
-        fig.canvas.draw()
-        vis_image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        # Convert figure to image with error handling
+        try:
+            fig.canvas.draw()
+            vis_image = np.frombuffer(fig.canvas.tostring_argb(), dtype=np.uint8)
+            vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (4,))  # ARGB has 4 channels
+            # Convert ARGB to RGB
+            vis_image = vis_image[:, :, 1:]  # Remove alpha channel
+        except (ValueError, AttributeError) as e:
+            # If conversion fails, return the original image
+            print(f"Warning: Could not convert visualization to array: {e}")
         
         # Close figure to free memory
         plt.close(fig)
