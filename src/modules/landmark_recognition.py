@@ -393,7 +393,7 @@ if __name__ == "__main__":
     recognizer = LandmarkRecognizer(
         max_features=1000,
         orb_distance_thresh=65,
-        min_matches=8,
+        min_matches=7,
         ransac_thresh=6.4
     )
     

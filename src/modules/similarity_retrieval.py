@@ -553,6 +553,9 @@ class SimilarityRetriever:
         Returns:
             Visualization image
         """
+        # Extract features from query image
+        query_features = self.extract_features(query_image)
+        
         # Number of similar images
         n_similar = len(similar_images)
         
@@ -560,8 +563,12 @@ class SimilarityRetriever:
             print("No similar images found")
             return query_image
         
-        # Create figure
+        # Create figure with appropriate size
         fig, axs = plt.subplots(1, n_similar + 1, figsize=(4 * (n_similar + 1), 4))
+        
+        # Handle case where there's only one subplot
+        if n_similar == 0:
+            axs = [axs]
         
         # Display query image
         axs[0].imshow(cv2.cvtColor(query_image, cv2.COLOR_BGR2RGB))
@@ -578,57 +585,24 @@ class SimilarityRetriever:
                 axs[i + 1].imshow(cv2.cvtColor(similar_image, cv2.COLOR_BGR2RGB))
                 axs[i + 1].set_title(f"Similarity: {similar['similarity_score']:.2f}")
                 axs[i + 1].axis('off')
-                
-                # If using ORB or SIFT, draw matches
-                if self.feature_type in ['orb', 'combined', 'combined_no_sift'] and 'orb' in similar['similarity_details']:
-                    # Get matches
-                    orb_details = similar['similarity_details']['orb']
-                    if 'matches' in orb_details and orb_details['matches']:
-                        # Draw matches on a separate subplot
-                        fig.set_figheight(8)
-                        if len(axs.shape) == 1:
-                            axs = axs.reshape(1, -1)
-                        
-                        if i == 0:
-                            # Add a new row of subplots for matches
-                            fig.delaxes(axs[0, 0])
-                            axs = np.vstack((axs, np.zeros((1, n_similar + 1), dtype=object)))
-                            axs[0, 0] = fig.add_subplot(2, n_similar + 1, 1)
-                            axs[0, 0].imshow(cv2.cvtColor(query_image, cv2.COLOR_BGR2RGB))
-                            axs[0, 0].set_title("Query Image")
-                            axs[0, 0].axis('off')
-                            
-                            for j in range(1, n_similar + 1):
-                                axs[0, j] = fig.add_subplot(2, n_similar + 1, j + 1)
-                        
-                        # Draw matches
-                        query_keypoints = query_features['orb_keypoints']
-                        db_features = self.image_features[similar['index']]
-                        db_keypoints = db_features['orb_keypoints']
-                        
-                        matches_img = cv2.drawMatches(
-                            query_image, query_keypoints,
-                            similar_image, db_keypoints,
-                            orb_details['matches'][:10],  # Show top 10 matches
-                            None, flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS
-                        )
-                        
-                        axs[1, i + 1] = fig.add_subplot(2, n_similar + 1, n_similar + 2 + i + 1)
-                        axs[1, i + 1].imshow(cv2.cvtColor(matches_img, cv2.COLOR_BGR2RGB))
-                        axs[1, i + 1].set_title(f"Top Matches: {len(orb_details['matches'])}")
-                        axs[1, i + 1].axis('off')
         
         # Adjust layout
         plt.tight_layout()
         
         # Save if output path is provided
         if output_path is not None:
-            plt.savefig(output_path)
+            plt.savefig(output_path, bbox_inches='tight', dpi=150)
         
-        # Convert figure to image
-        fig.canvas.draw()
-        vis_image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        # Convert figure to image with error handling
+        try:
+            fig.canvas.draw()
+            vis_image = np.frombuffer(fig.canvas.tostring_argb(), dtype=np.uint8)
+            vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (4,))  # ARGB has 4 channels
+            # Convert ARGB to RGB
+            vis_image = vis_image[:, :, 1:]  # Remove alpha channel
+        except (ValueError, AttributeError) as e:
+            # If conversion fails, return the original image
+            print(f"Warning: Could not convert visualization to array: {e}")
         
         # Close figure to free memory
         plt.close(fig)
@@ -645,11 +619,16 @@ class SimilarityRetriever:
         # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(db_path), exist_ok=True)
         
+        # Convert keypoints to serializable format
+        serializable_features = []
+        for features in self.image_features:
+            serializable_features.append(self._convert_keypoints_to_serializable(features))
+        
         # Create database dictionary
         database = {
             'feature_type': self.feature_type,
             'image_paths': self.image_paths,
-            'image_features': self.image_features,
+            'image_features': serializable_features,
             'image_metadata': self.image_metadata
         }
         
@@ -678,10 +657,15 @@ class SimilarityRetriever:
             if key not in database:
                 raise ValueError(f"Invalid database format: Missing key '{key}'")
         
+        # Convert keypoints back to OpenCV KeyPoint objects
+        converted_features = []
+        for features in database['image_features']:
+            converted_features.append(self._convert_keypoints_from_serializable(features))
+        
         # Update instance variables
         self.feature_type = database['feature_type']
         self.image_paths = database['image_paths']
-        self.image_features = database['image_features']
+        self.image_features = converted_features
         self.image_metadata = database['image_metadata']
         
         # Initialize feature extractors based on feature type
@@ -700,6 +684,68 @@ class SimilarityRetriever:
                     self.feature_type = 'orb'
                     self.orb = cv2.ORB_create(nfeatures=1000)
                     self.bf_matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+
+    def _convert_keypoints_to_serializable(self, features: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Convert OpenCV KeyPoint objects to serializable format.
+        
+        Args:
+            features: Dictionary of features
+            
+        Returns:
+            Dictionary with serializable keypoints
+        """
+        serializable_features = features.copy()
+        
+        # Convert ORB keypoints
+        if 'orb_keypoints' in serializable_features:
+            keypoints = serializable_features['orb_keypoints']
+            if keypoints is not None:
+                keypoints_data = [(kp.pt, kp.size, kp.angle, kp.response, kp.octave, kp.class_id) 
+                                 for kp in keypoints]
+                serializable_features['orb_keypoints'] = keypoints_data
+        
+        # Convert SIFT keypoints
+        if 'sift_keypoints' in serializable_features:
+            keypoints = serializable_features['sift_keypoints']
+            if keypoints is not None:
+                keypoints_data = [(kp.pt, kp.size, kp.angle, kp.response, kp.octave, kp.class_id) 
+                                 for kp in keypoints]
+                serializable_features['sift_keypoints'] = keypoints_data
+        
+        return serializable_features
+    
+    def _convert_keypoints_from_serializable(self, features: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Convert serializable keypoints back to OpenCV KeyPoint objects.
+        
+        Args:
+            features: Dictionary of features with serializable keypoints
+            
+        Returns:
+            Dictionary with OpenCV KeyPoint objects
+        """
+        converted_features = features.copy()
+        
+        # Convert ORB keypoints
+        if 'orb_keypoints' in converted_features:
+            keypoints_data = converted_features['orb_keypoints']
+            if keypoints_data is not None:
+                keypoints = [cv2.KeyPoint(x=pt[0][0], y=pt[0][1], size=pt[1], 
+                                        angle=pt[2], response=pt[3], octave=pt[4], 
+                                        class_id=pt[5]) for pt in keypoints_data]
+                converted_features['orb_keypoints'] = keypoints
+        
+        # Convert SIFT keypoints
+        if 'sift_keypoints' in converted_features:
+            keypoints_data = converted_features['sift_keypoints']
+            if keypoints_data is not None:
+                keypoints = [cv2.KeyPoint(x=pt[0][0], y=pt[0][1], size=pt[1], 
+                                        angle=pt[2], response=pt[3], octave=pt[4], 
+                                        class_id=pt[5]) for pt in keypoints_data]
+                converted_features['sift_keypoints'] = keypoints
+        
+        return converted_features
 
 
 class EdgeSimilarityRetriever(SimilarityRetriever):
@@ -903,10 +949,16 @@ class EdgeSimilarityRetriever(SimilarityRetriever):
         if output_path is not None:
             plt.savefig(output_path)
         
-        # Convert figure to image
-        fig.canvas.draw()
-        vis_image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        # Convert figure to image with error handling
+        try:
+            fig.canvas.draw()
+            vis_image = np.frombuffer(fig.canvas.tostring_argb(), dtype=np.uint8)
+            vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (4,))  # ARGB has 4 channels
+            # Convert ARGB to RGB
+            vis_image = vis_image[:, :, 1:]  # Remove alpha channel
+        except (ValueError, AttributeError) as e:
+            # If conversion fails, return the original image
+            print(f"Warning: Could not convert visualization to array: {e}")
         
         # Close figure to free memory
         plt.close(fig)
@@ -1149,10 +1201,16 @@ class CornerSimilarityRetriever(SimilarityRetriever):
         if output_path is not None:
             plt.savefig(output_path)
         
-        # Convert figure to image
-        fig.canvas.draw()
-        vis_image = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-        vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        # Convert figure to image with error handling
+        try:
+            fig.canvas.draw()
+            vis_image = np.frombuffer(fig.canvas.tostring_argb(), dtype=np.uint8)
+            vis_image = vis_image.reshape(fig.canvas.get_width_height()[::-1] + (4,))  # ARGB has 4 channels
+            # Convert ARGB to RGB
+            vis_image = vis_image[:, :, 1:]  # Remove alpha channel
+        except (ValueError, AttributeError) as e:
+            # If conversion fails, return the original image
+            print(f"Warning: Could not convert visualization to array: {e}")
         
         # Close figure to free memory
         plt.close(fig)

@@ -460,10 +460,10 @@ class ImageQualityAssessor:
         axs[1, 2].axis('off')
         
         # Add text for quality issues and suggestions
-        issues_text = "Quality Issues: " + ", ".join(assessment['quality_issues']) if assessment['quality_issues'] else "No issues detected"
+        # issues_text = "Quality Issues: " + ", ".join(assessment['quality_issues']) if assessment['quality_issues'] else "No issues detected"
         suggestions_text = "Suggestions:\n" + "\n".join(assessment['improvement_suggestions']) if assessment['improvement_suggestions'] else "No improvements needed"
         
-        fig.text(0.5, 0.02, issues_text, ha='center', fontsize=12, color='red' if assessment['quality_issues'] else 'green')
+        # fig.text(0.5, 0.02, issues_text, ha='center', fontsize=12, color='red' if assessment['quality_issues'] else 'green')
         fig.text(0.5, 0.01, suggestions_text, ha='center', fontsize=10)
         
         # Adjust layout
