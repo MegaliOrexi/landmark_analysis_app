@@ -749,9 +749,9 @@ class ImageTagger:
         # Create tags
         tags = {
             'laplacian_variance': float(laplacian_var),
-            'is_blurry': laplacian_var < 100,
+            'is_blurry': bool(laplacian_var < 100),
             'contrast': float(std_dev),
-            'has_low_contrast': std_dev < 40,
+            'has_low_contrast': bool(std_dev < 40),
             'saturation_ratio': float(saturation_ratio),
             'noise_level': float(noise_level),
             'quality_issues': quality_issues,
@@ -791,7 +791,7 @@ class ImageTagger:
             'aspect_ratio': float(aspect_ratio),
             'orientation': orientation,
             'resolution': width * height,
-            'is_high_resolution': width * height > 1000000  # 1 megapixel
+            'is_high_resolution': bool(width * height > 1000000)  # 1 megapixel
         }
         
         return tags

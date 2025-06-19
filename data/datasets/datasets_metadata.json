@@ -5,68 +5,1252 @@
     "type": "landmarks",
     "description": "Dataset of landmarks in Dubai",
     "created_at": "2025-06-18T14:13:37.173394",
-    "updated_at": "2025-06-18T14:13:57.547589",
+    "updated_at": "2025-06-19T19:44:55.194154",
     "image_count": 12,
     "tags": {
       "88495bcd-51c2-48cc-9fa6-44a540fdc4be": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.516756",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 1,
+            "has_faces": true,
+            "face_locations": [
+              [
+                701,
+                696,
+                134,
+                134
+              ]
+            ]
+          },
+          "colors": {
+            "mean_bgr": [
+              111.52694424153884,
+              116.05888104320536,
+              108.25145686226767
+            ],
+            "mean_hsv": [
+              72.12347536725915,
+              53.62552606660715,
+              120.29619944268593
+            ],
+            "mean_lab": [
+              119.90491897302708,
+              124.41802829856884,
+              129.5941914887861
+            ],
+            "dominant_colors": [
+              [
+                31,
+                41,
+                33
+              ],
+              [
+                76,
+                80,
+                70
+              ],
+              [
+                115,
+                119,
+                110
+              ],
+              [
+                162,
+                163,
+                156
+              ],
+              [
+                219,
+                222,
+                217
+              ]
+            ],
+            "dominant_color_percentages": [
+              22.514027541054567,
+              22.46814381949517,
+              21.916132348564783,
+              18.760111462814166,
+              14.341584828071314
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.14772069366663962,
+            "entropy": 7.841894149780273
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 120.29619944268593,
+            "bright_pixel_ratio": 0.5789427265102941,
+            "dark_pixel_ratio": 0.13873982090198306
+          },
+          "quality": {
+            "laplacian_variance": 2325.3694270919705,
+            "is_blurry": false,
+            "contrast": 62.110702147307045,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.015853150447745042,
+            "noise_level": 8.320388496604712,
+            "quality_issues": [
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 1665,
+            "height": 1110,
+            "aspect_ratio": 1.5,
+            "orientation": "landscape",
+            "resolution": 1848150,
+            "is_high_resolution": true
+          },
+          "tagged_at": "2025-06-19T19:44:24.019532"
+        }
       },
       "00a6cef7-2573-4edd-b33f-8550ef9504c1": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.518657",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 2,
+            "has_faces": true,
+            "face_locations": [
+              [
+                196,
+                348,
+                58,
+                58
+              ],
+              [
+                1549,
+                385,
+                51,
+                51
+              ]
+            ]
+          },
+          "colors": {
+            "mean_bgr": [
+              102.28035224413603,
+              107.14306468630792,
+              110.47725238752265
+            ],
+            "mean_hsv": [
+              69.4160349538728,
+              67.09197413629846,
+              121.86789546303059
+            ],
+            "mean_lab": [
+              113.39974785596407,
+              129.6994843492141,
+              131.5379390201012
+            ],
+            "dominant_colors": [
+              [
+                34,
+                34,
+                41
+              ],
+              [
+                81,
+                87,
+                93
+              ],
+              [
+                152,
+                150,
+                139
+              ],
+              [
+                203,
+                204,
+                196
+              ],
+              [
+                79,
+                131,
+                180
+              ]
+            ],
+            "dominant_color_percentages": [
+              31.787733679625575,
+              24.266807347888427,
+              18.97578659740822,
+              18.485079674268864,
+              6.484592700808917
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.11134431729026324,
+            "entropy": 7.806726932525635
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 121.86789546303059,
+            "bright_pixel_ratio": 0.5788702215729242,
+            "dark_pixel_ratio": 0.1842902361821281
+          },
+          "quality": {
+            "laplacian_variance": 723.764009638893,
+            "is_blurry": false,
+            "contrast": 62.931841504023105,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.008819089359629901,
+            "noise_level": 5.2373730487244,
+            "quality_issues": [
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 1665,
+            "height": 1110,
+            "aspect_ratio": 1.5,
+            "orientation": "landscape",
+            "resolution": 1848150,
+            "is_high_resolution": true
+          },
+          "tagged_at": "2025-06-19T19:44:26.114616"
+        }
       },
       "8a54d5b5-3d5c-42c7-ac50-f2221631d742": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.523025",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 0,
+            "has_faces": false,
+            "face_locations": []
+          },
+          "colors": {
+            "mean_bgr": [
+              94.47404745836384,
+              95.70937185441069,
+              87.25761518576135
+            ],
+            "mean_hsv": [
+              77.21749891334187,
+              83.13004438140557,
+              105.6332800489568
+            ],
+            "mean_lab": [
+              99.5275982567716,
+              125.62589506314056,
+              127.61856869967058
+            ],
+            "dominant_colors": [
+              [
+                76,
+                68,
+                58
+              ],
+              [
+                25,
+                37,
+                30
+              ],
+              [
+                112,
+                111,
+                99
+              ],
+              [
+                154,
+                154,
+                148
+              ],
+              [
+                206,
+                211,
+                208
+              ]
+            ],
+            "dominant_color_percentages": [
+              28.682341233528554,
+              26.147711154831626,
+              20.34524272510981,
+              15.759831396412885,
+              9.06487349011713
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.15022762628111275,
+            "entropy": 7.586272239685059
+          },
+          "time_of_day": {
+            "time_of_day": "unknown",
+            "mean_brightness": 105.6332800489568,
+            "bright_pixel_ratio": 0.46577169884699854,
+            "dark_pixel_ratio": 0.182627196193265
+          },
+          "quality": {
+            "laplacian_variance": 1148.4480927286977,
+            "is_blurry": false,
+            "contrast": 55.87619342411662,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.011907485358711566,
+            "noise_level": 7.566690782851391,
+            "quality_issues": [
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 1024,
+            "height": 683,
+            "aspect_ratio": 1.499267935578331,
+            "orientation": "landscape",
+            "resolution": 699392,
+            "is_high_resolution": false
+          },
+          "tagged_at": "2025-06-19T19:44:27.024352"
+        }
       },
       "3f25f306-7ef7-496f-9129-cade5980bd33": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.525744",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 1,
+            "has_faces": true,
+            "face_locations": [
+              [
+                400,
+                456,
+                56,
+                56
+              ]
+            ]
+          },
+          "colors": {
+            "mean_bgr": [
+              56.44823229166666,
+              56.95308020833333,
+              51.392275
+            ],
+            "mean_hsv": [
+              59.96608020833333,
+              171.1922625,
+              79.63418854166666
+            ],
+            "mean_lab": [
+              60.007611458333336,
+              130.45913020833333,
+              127.78498229166667
+            ],
+            "dominant_colors": [
+              [
+                10,
+                15,
+                22
+              ],
+              [
+                87,
+                60,
+                28
+              ],
+              [
+                24,
+                103,
+                150
+              ],
+              [
+                183,
+                130,
+                58
+              ],
+              [
+                215,
+                209,
+                188
+              ]
+            ],
+            "dominant_color_percentages": [
+              54.24416666666667,
+              19.311666666666667,
+              10.484166666666667,
+              9.293750000000001,
+              6.66625
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.07520208333333334,
+            "entropy": 7.169495582580566
+          },
+          "time_of_day": {
+            "time_of_day": "unknown",
+            "mean_brightness": 79.63418854166666,
+            "bright_pixel_ratio": 0.31685104166666667,
+            "dark_pixel_ratio": 0.46448125
+          },
+          "quality": {
+            "laplacian_variance": 1226.5783847453547,
+            "is_blurry": false,
+            "contrast": 57.41810370366513,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.20657916666666667,
+            "noise_level": 5.555109375,
+            "quality_issues": [
+              "saturation",
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 1200,
+            "height": 800,
+            "aspect_ratio": 1.5,
+            "orientation": "landscape",
+            "resolution": 960000,
+            "is_high_resolution": false
+          },
+          "tagged_at": "2025-06-19T19:44:28.281976"
+        }
       },
       "9fa31ddc-b8d1-406d-b24b-176b7388418e": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.527743",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 1,
+            "has_faces": true,
+            "face_locations": [
+              [
+                74,
+                134,
+                96,
+                96
+              ]
+            ]
+          },
+          "colors": {
+            "mean_bgr": [
+              159.0778564814815,
+              143.38123148148148,
+              145.4572824074074
+            ],
+            "mean_hsv": [
+              109.4077361111111,
+              62.04508796296296,
+              162.31601388888888
+            ],
+            "mean_lab": [
+              148.79901851851852,
+              132.42098148148148,
+              120.05295833333334
+            ],
+            "dominant_colors": [
+              [
+                247,
+                238,
+                234
+              ],
+              [
+                34,
+                20,
+                17
+              ],
+              [
+                207,
+                186,
+                191
+              ],
+              [
+                148,
+                123,
+                141
+              ],
+              [
+                94,
+                77,
+                80
+              ]
+            ],
+            "dominant_color_percentages": [
+              33.53148148148148,
+              23.536574074074075,
+              18.149537037037035,
+              12.534259259259258,
+              12.248148148148148
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.1255,
+            "entropy": 7.569717884063721
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 162.31601388888888,
+            "bright_pixel_ratio": 0.7045462962962963,
+            "dark_pixel_ratio": 0.18200462962962963
+          },
+          "quality": {
+            "laplacian_variance": 2213.104316481396,
+            "is_blurry": false,
+            "contrast": 87.54483735402138,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.10939814814814815,
+            "noise_level": 7.807060185185185,
+            "quality_issues": [
+              "saturation",
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 600,
+            "height": 360,
+            "aspect_ratio": 1.6666666666666667,
+            "orientation": "landscape",
+            "resolution": 216000,
+            "is_high_resolution": false
+          },
+          "tagged_at": "2025-06-19T19:44:28.564544"
+        }
       },
       "f799490f-d3b2-447a-b78f-fe7b91c5f564": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.529439",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 4,
+            "has_faces": true,
+            "face_locations": [
+              [
+                433,
+                319,
+                49,
+                49
+              ],
+              [
+                592,
+                325,
+                47,
+                47
+              ],
+              [
+                516,
+                265,
+                51,
+                51
+              ],
+              [
+                650,
+                292,
+                56,
+                56
+              ]
+            ]
+          },
+          "colors": {
+            "mean_bgr": [
+              154.0896960960961,
+              142.43083723723723,
+              132.6290178178178
+            ],
+            "mean_hsv": [
+              94.96567607607608,
+              51.13773773773774,
+              157.61755355355356
+            ],
+            "mean_lab": [
+              147.982416016016,
+              127.5285941941942,
+              120.9148012012012
+            ],
+            "dominant_colors": [
+              [
+                228,
+                212,
+                195
+              ],
+              [
+                180,
+                163,
+                147
+              ],
+              [
+                124,
+                118,
+                115
+              ],
+              [
+                82,
+                76,
+                76
+              ],
+              [
+                33,
+                24,
+                21
+              ]
+            ],
+            "dominant_color_percentages": [
+              27.063543543543545,
+              25.77841841841842,
+              24.35235235235235,
+              15.791631631631631,
+              7.014054054054054
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.1404108108108108,
+            "entropy": 7.747147560119629
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 157.61755355355356,
+            "bright_pixel_ratio": 0.8154842842842843,
+            "dark_pixel_ratio": 0.054427227227227225
+          },
+          "quality": {
+            "laplacian_variance": 2998.8114865185785,
+            "is_blurry": false,
+            "contrast": 57.11420102265489,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.015450650650650651,
+            "noise_level": 9.325360560560561,
+            "quality_issues": [
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 925,
+            "height": 675,
+            "aspect_ratio": 1.3703703703703705,
+            "orientation": "landscape",
+            "resolution": 624375,
+            "is_high_resolution": false
+          },
+          "tagged_at": "2025-06-19T19:44:29.366236"
+        }
       },
       "35ae2e20-c9c1-498f-ab4e-c7b89633e039": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.531347",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 0,
+            "has_faces": false,
+            "face_locations": []
+          },
+          "colors": {
+            "mean_bgr": [
+              68.29482193064668,
+              78.9066237113402,
+              59.58456771321462
+            ],
+            "mean_hsv": [
+              83.24119845360825,
+              124.31647727272727,
+              90.94585754451734
+            ],
+            "mean_lab": [
+              78.85461808809747,
+              120.59972469540769,
+              131.0296227741331
+            ],
+            "dominant_colors": [
+              [
+                25,
+                25,
+                18
+              ],
+              [
+                90,
+                63,
+                54
+              ],
+              [
+                126,
+                156,
+                120
+              ],
+              [
+                14,
+                91,
+                37
+              ],
+              [
+                211,
+                220,
+                206
+              ]
+            ],
+            "dominant_color_percentages": [
+              40.21708059981256,
+              21.957005623242736,
+              16.02928772258669,
+              14.350866916588567,
+              7.445759137769448
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.08254334582942831,
+            "entropy": 7.4445953369140625
+          },
+          "time_of_day": {
+            "time_of_day": "unknown",
+            "mean_brightness": 90.94585754451734,
+            "bright_pixel_ratio": 0.35561387066541705,
+            "dark_pixel_ratio": 0.3134137769447048
+          },
+          "quality": {
+            "laplacian_variance": 2236.9273160673038,
+            "is_blurry": false,
+            "contrast": 59.63192149548449,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.039756326148078724,
+            "noise_level": 7.6290639643861295,
+            "quality_issues": [
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 1067,
+            "height": 800,
+            "aspect_ratio": 1.33375,
+            "orientation": "landscape",
+            "resolution": 853600,
+            "is_high_resolution": false
+          },
+          "tagged_at": "2025-06-19T19:44:30.384394"
+        }
       },
       "77bc88fd-abb4-4717-82c3-3b9e893884b1": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.535058",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 0,
+            "has_faces": false,
+            "face_locations": []
+          },
+          "colors": {
+            "mean_bgr": [
+              131.2713072107793,
+              104.94529978163075,
+              35.607318259655635
+            ],
+            "mean_hsv": [
+              96.30626231429908,
+              206.35000368641673,
+              132.50017867080038
+            ],
+            "mean_lab": [
+              104.99740913445899,
+              119.40097571484992,
+              107.76456875593254
+            ],
+            "dominant_colors": [
+              [
+                120,
+                87,
+                6
+              ],
+              [
+                78,
+                54,
+                6
+              ],
+              [
+                170,
+                131,
+                12
+              ],
+              [
+                165,
+                156,
+                112
+              ],
+              [
+                243,
+                240,
+                210
+              ]
+            ],
+            "dominant_color_percentages": [
+              37.695426398004074,
+              28.794026745231182,
+              15.051593161863705,
+              9.579339097728203,
+              8.879614597172832
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.0685658690421763,
+            "entropy": 7.196210861206055
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 132.50017867080038,
+            "bright_pixel_ratio": 0.705278393003885,
+            "dark_pixel_ratio": 0.014226048850393724
+          },
+          "quality": {
+            "laplacian_variance": 891.143004475686,
+            "is_blurry": false,
+            "contrast": 55.66431363697471,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.29903693752505467,
+            "noise_level": 3.7354803345413914,
+            "quality_issues": [
+              "saturation"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 4024,
+            "height": 2683,
+            "aspect_ratio": 1.4998136414461425,
+            "orientation": "landscape",
+            "resolution": 10796392,
+            "is_high_resolution": true
+          },
+          "tagged_at": "2025-06-19T19:44:40.664424"
+        }
       },
       "22713f73-2b35-4683-a2aa-57520248da21": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.537059",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 0,
+            "has_faces": false,
+            "face_locations": []
+          },
+          "colors": {
+            "mean_bgr": [
+              46.443275,
+              56.30258333333333,
+              68.89444166666667
+            ],
+            "mean_hsv": [
+              29.41888888888889,
+              91.18406388888889,
+              69.50696388888889
+            ],
+            "mean_lab": [
+              60.98645,
+              132.11235,
+              135.84657222222222
+            ],
+            "dominant_colors": [
+              [
+                15,
+                17,
+                22
+              ],
+              [
+                32,
+                41,
+                55
+              ],
+              [
+                54,
+                71,
+                93
+              ],
+              [
+                97,
+                119,
+                141
+              ],
+              [
+                170,
+                186,
+                197
+              ]
+            ],
+            "dominant_color_percentages": [
+              37.43083333333333,
+              27.07222222222222,
+              18.70861111111111,
+              9.447777777777777,
+              7.3405555555555555
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.128525,
+            "entropy": 7.176516532897949
+          },
+          "time_of_day": {
+            "time_of_day": "sunset/sunrise",
+            "mean_brightness": 69.50696388888889,
+            "bright_pixel_ratio": 0.22563611111111112,
+            "dark_pixel_ratio": 0.475425
+          },
+          "quality": {
+            "laplacian_variance": 2609.753124167778,
+            "is_blurry": false,
+            "contrast": 49.62996092861917,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.039961111111111114,
+            "noise_level": 9.216675,
+            "quality_issues": [
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 800,
+            "height": 450,
+            "aspect_ratio": 1.7777777777777777,
+            "orientation": "landscape",
+            "resolution": 360000,
+            "is_high_resolution": false
+          },
+          "tagged_at": "2025-06-19T19:44:41.139360"
+        }
       },
       "1c09477d-0db4-4d2f-9bb6-f0cac8331938": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.543543",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 6,
+            "has_faces": true,
+            "face_locations": [
+              [
+                3364,
+                1268,
+                76,
+                76
+              ],
+              [
+                1769,
+                1423,
+                85,
+                85
+              ],
+              [
+                1763,
+                1456,
+                86,
+                86
+              ],
+              [
+                499,
+                2437,
+                56,
+                56
+              ],
+              [
+                3895,
+                2105,
+                244,
+                244
+              ],
+              [
+                1950,
+                1433,
+                66,
+                66
+              ]
+            ]
+          },
+          "colors": {
+            "mean_bgr": [
+              116.91050619270334,
+              123.02936029274598,
+              133.0394763184895
+            ],
+            "mean_hsv": [
+              54.666943572780085,
+              55.06324702190598,
+              138.35520841661338
+            ],
+            "mean_lab": [
+              129.85675925740858,
+              130.87176965075685,
+              132.46236933362647
+            ],
+            "dominant_colors": [
+              [
+                180,
+                202,
+                232
+              ],
+              [
+                18,
+                16,
+                22
+              ],
+              [
+                65,
+                66,
+                63
+              ],
+              [
+                113,
+                108,
+                105
+              ],
+              [
+                163,
+                161,
+                166
+              ]
+            ],
+            "dominant_color_percentages": [
+              33.93462350762179,
+              18.750324792133036,
+              18.469204708986247,
+              14.824695528195289,
+              14.021151463063639
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.040413052313186225,
+            "entropy": 7.698162078857422
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 138.35520841661338,
+            "bright_pixel_ratio": 0.6147259920317664,
+            "dark_pixel_ratio": 0.18188942410190811
+          },
+          "quality": {
+            "laplacian_variance": 275.1645374647514,
+            "is_blurry": false,
+            "contrast": 74.62638215903831,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.005233733743737342,
+            "noise_level": 2.922452463756529,
+            "quality_issues": [],
+            "overall_quality": "good"
+          },
+          "size": {
+            "width": 4240,
+            "height": 2832,
+            "aspect_ratio": 1.497175141242938,
+            "orientation": "landscape",
+            "resolution": 12007680,
+            "is_high_resolution": true
+          },
+          "tagged_at": "2025-06-19T19:44:51.944623"
+        }
       },
       "1c3f4efc-0b80-4458-8757-1f53f9c67e5e": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.545578",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 1,
+            "has_faces": true,
+            "face_locations": [
+              [
+                800,
+                521,
+                65,
+                65
+              ]
+            ]
+          },
+          "colors": {
+            "mean_bgr": [
+              152.56645204425556,
+              160.31177828253223,
+              158.06953582942555
+            ],
+            "mean_hsv": [
+              62.242224135404456,
+              61.93715471131301,
+              170.0544621922626
+            ],
+            "mean_lab": [
+              164.6414960067409,
+              126.18900296746776,
+              132.35033704572098
+            ],
+            "dominant_colors": [
+              [
+                236,
+                236,
+                241
+              ],
+              [
+                22,
+                55,
+                42
+              ],
+              [
+                196,
+                198,
+                209
+              ],
+              [
+                168,
+                158,
+                142
+              ],
+              [
+                97,
+                107,
+                101
+              ]
+            ],
+            "dominant_color_percentages": [
+              29.77753150644783,
+              21.59730363423212,
+              20.09067262602579,
+              14.276084407971865,
+              14.258407825322392
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.1143592467760844,
+            "entropy": 7.780058860778809
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 170.0544621922626,
+            "bright_pixel_ratio": 0.7586880861664713,
+            "dark_pixel_ratio": 0.07707264800703399
+          },
+          "quality": {
+            "laplacian_variance": 3357.209134247788,
+            "is_blurry": false,
+            "contrast": 74.38603165703962,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.0405022713950762,
+            "noise_level": 7.117770002930833,
+            "quality_issues": [
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 1280,
+            "height": 853,
+            "aspect_ratio": 1.5005861664712778,
+            "orientation": "landscape",
+            "resolution": 1091840,
+            "is_high_resolution": true
+          },
+          "tagged_at": "2025-06-19T19:44:53.094158"
+        }
       },
       "8febb5e1-cbf5-420c-a303-1d7fbd84ac09": {
         "batch_added_at": "2025-06-18T14:13:57.513042",
         "added_at": "2025-06-18T14:13:57.547589",
-        "class": "landmarks"
+        "class": "landmarks",
+        "automatic_tags": {
+          "faces": {
+            "face_count": 0,
+            "has_faces": false,
+            "face_locations": []
+          },
+          "colors": {
+            "mean_bgr": [
+              115.0610380549683,
+              124.06384989429175,
+              114.93165697674418
+            ],
+            "mean_hsv": [
+              76.51504598308668,
+              69.19546141649049,
+              132.75353541226215
+            ],
+            "mean_lab": [
+              127.75704492600423,
+              123.46527378435518,
+              131.90781342494714
+            ],
+            "dominant_colors": [
+              [
+                90,
+                98,
+                87
+              ],
+              [
+                45,
+                53,
+                41
+              ],
+              [
+                182,
+                169,
+                160
+              ],
+              [
+                247,
+                243,
+                237
+              ],
+              [
+                93,
+                167,
+                168
+              ]
+            ],
+            "dominant_color_percentages": [
+              30.02151162790698,
+              28.43298097251586,
+              19.833879492600424,
+              11.95301268498943,
+              9.758615221987316
+            ]
+          },
+          "features": {
+            "keypoint_count": 1000,
+            "edge_density": 0.18092124735729387,
+            "entropy": 7.699357986450195
+          },
+          "time_of_day": {
+            "time_of_day": "day",
+            "mean_brightness": 132.75353541226215,
+            "bright_pixel_ratio": 0.5964275898520085,
+            "dark_pixel_ratio": 0.07905602536997886
+          },
+          "quality": {
+            "laplacian_variance": 937.8359693090633,
+            "is_blurry": false,
+            "contrast": 65.77864115684434,
+            "has_low_contrast": false,
+            "saturation_ratio": 0.08669027484143763,
+            "noise_level": 8.184737843551797,
+            "quality_issues": [
+              "saturation",
+              "noisy"
+            ],
+            "overall_quality": "needs_improvement"
+          },
+          "size": {
+            "width": 2000,
+            "height": 946,
+            "aspect_ratio": 2.1141649048625792,
+            "orientation": "landscape",
+            "resolution": 1892000,
+            "is_high_resolution": true
+          },
+          "tagged_at": "2025-06-19T19:44:55.194154"
+        }
       }
     },
     "classes": [
