@@ -36,6 +36,16 @@ This application provides a comprehensive toolkit for visual landmark and scene 
    - For face recognition: Place face images in `data/images/faces` with subdirectories for each person
    - For landmark recognition: Place landmark images in `data/images/landmarks` with subdirectories for each landmark
 
+4. **Build the landmark and similarity databases:**
+   - Before running landmark recognition, you must build the landmark database:
+     ```
+     python build_landmark_db.py
+     ```
+   - Before running similarity retrieval, you must build the similarity database:
+     ```
+     python build_similarity_db.py
+     ```
+
 ## Usage
 
 The application provides both a command-line interface and a Python API for integration into your projects.
@@ -143,6 +153,8 @@ label, confidence, name = recognizer.predict(face)
 
 ### Landmark Recognition
 
+**Note:** Before using the landmark recognition module, make sure you have run `python build_landmark_db.py` to build the landmark database.
+
 The landmark recognition module uses ORB features and feature matching for landmark recognition.
 
 ```python
@@ -219,6 +231,8 @@ creator.tag_image(dataset_id, image_id, {'automatic_tags': tags})
 ```
 
 ### Similarity Retrieval
+
+**Note:** Before using the similarity retrieval module, make sure you have run `python build_similarity_db.py` to build the similarity database.
 
 The similarity retrieval module finds images similar to a query image based on various similarity metrics.
 
